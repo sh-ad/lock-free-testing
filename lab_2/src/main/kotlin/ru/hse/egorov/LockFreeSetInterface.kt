@@ -1,10 +1,21 @@
-package org.LockFreeSet;
+package ru.hse.egorov
 
 /**
  * Lock-Free множество.
  * @param <T> Тип ключей
- */
-public interface Set<T extends Comparable<T>> {
+</T> */
+interface LockFreeSetInterface<T : Comparable<T>> {
+
+
+    /**
+     * Проверка множества на пустоту
+     *
+     * Алгоритм должен быть как минимум lock-free
+     *
+     * @return true если множество пусто, иначе - false
+     */
+    val isEmpty: Boolean
+
     /**
      * Добавить ключ к множеству
      *
@@ -13,7 +24,7 @@ public interface Set<T extends Comparable<T>> {
      * @param value значение ключа
      * @return false если value уже существует в множестве, true если элемент был добавлен
      */
-    boolean add(T value);
+    fun add(value: T): Boolean
 
 
     /**
@@ -24,7 +35,7 @@ public interface Set<T extends Comparable<T>> {
      * @param value значение ключа
      * @return false если ключ не был найден, true если ключ успешно удален
      */
-    boolean remove(T value);
+    fun remove(value: T): Boolean
 
 
     /**
@@ -35,22 +46,12 @@ public interface Set<T extends Comparable<T>> {
      * @param value значение ключа
      * @return true если элемент содержится в множестве, иначе - false
      */
-    boolean contains(T value);
-
-
-    /**
-     * Проверка множества на пустоту
-     *
-     * Алгоритм должен быть как минимум lock-free
-     *
-     * @return true если множество пусто, иначе - false
-     */
-    boolean isEmpty();
+    operator fun contains(value: T): Boolean
 
     /**
      * Возвращает lock-free итератор для множества
      *
      * @return новый экземпляр итератор для множества
      */
-    java.util.Iterator<T> iterator();
+    operator fun iterator(): Iterator<T>
 }
