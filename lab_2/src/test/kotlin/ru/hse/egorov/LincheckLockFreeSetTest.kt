@@ -2,10 +2,12 @@ package ru.hse.egorov
 
 
 import org.jetbrains.kotlinx.lincheck.LinChecker
+import org.jetbrains.kotlinx.lincheck.LoggingLevel
 import org.jetbrains.kotlinx.lincheck.annotations.Operation
 import org.jetbrains.kotlinx.lincheck.annotations.Param
 import org.jetbrains.kotlinx.lincheck.paramgen.IntGen
 import org.jetbrains.kotlinx.lincheck.strategy.managed.modelchecking.ModelCheckingCTest
+import org.jetbrains.kotlinx.lincheck.strategy.managed.modelchecking.ModelCheckingOptions
 import org.jetbrains.kotlinx.lincheck.strategy.stress.StressCTest
 import org.jetbrains.kotlinx.lincheck.verifier.SerializabilityVerifier
 import org.jetbrains.kotlinx.lincheck.verifier.VerifierState
@@ -22,8 +24,7 @@ import org.junit.Test
 //@ModelCheckingCTest(verifier = QuiescentConsistencyVerifier::class)
 @StressCTest(verifier = QuiescentConsistencyVerifier::class)
 //@StressCTest(verifier = SerializabilityVerifier::class)
-class LincheckLockFreeSetTest : VerifierState() {
-//class LincheckLockFreeSetTest {
+class LincheckLockFreeSetTest {
     private val set = LockFreeSet<Int>()
 
     @Operation
@@ -46,13 +47,17 @@ class LincheckLockFreeSetTest : VerifierState() {
         LinChecker.check(LincheckLockFreeSetTest::class.java)
     }
 
-    //State который мы будем использовать для сравнения
-    override fun extractState(): Any {
-        val elements = mutableListOf<Int>()
-        val iterator = set.iterator();
-        while (iterator.hasNext()) {
-            elements.add(iterator.next())
-        }
-        return elements
+    @Test
+    fun runTest() {
+        val opts = ModelCheckingOptions()
+            .requireStateEquivalenceImplCheck(false)
+            .minimizeFailedScenario(false)
+            .actorsBefore(0)
+            .actorsAfter(0)
+            .actorsPerThread(25)
+            .iterations(5)
+            .threads(2)
+            .logLevel(LoggingLevel.INFO)
+        LinChecker.check(LincheckLockFreeSetTest::class.java, opts)
     }
 }
