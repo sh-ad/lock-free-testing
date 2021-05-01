@@ -12,8 +12,8 @@ import org.junit.Test
 
 @Param(name = "key", gen = IntGen::class)
 @ModelCheckingCTest
-class LincheckLockFreeSetTest {
-    private val set = LockFreeSet<Int>()
+class LincheckLockFreeSetCorrectTest {
+    private val set = LockFreeSetCorrect<Int>()
 
     @Operation
     fun add(@Param(name = "key") key: Int) = set.add(key)
@@ -24,7 +24,7 @@ class LincheckLockFreeSetTest {
 //    @Operation
 //    fun contains(@Param(name = "key") key: Int) = set.contains(key)
 
-    @Operation
+    @Operation()
     fun isEmpty() = set.isEmpty
 
 //    @Operation
@@ -32,7 +32,7 @@ class LincheckLockFreeSetTest {
 
     @Test
     fun test() {
-        LinChecker.check(LincheckLockFreeSetTest::class.java)
+        LinChecker.check(LincheckLockFreeSetCorrectTest::class.java)
     }
 
     @Test
@@ -48,7 +48,7 @@ class LincheckLockFreeSetTest {
             .iterations(1000)
             .threads(4)
             .logLevel(LoggingLevel.INFO)
-        LinChecker.check(LincheckLockFreeSetTest::class.java, opts)
+        LinChecker.check(LincheckLockFreeSetCorrectTest::class.java, opts)
     }
 
 }

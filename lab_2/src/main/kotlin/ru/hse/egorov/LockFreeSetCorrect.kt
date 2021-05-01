@@ -2,7 +2,8 @@ package ru.hse.egorov
 
 import java.util.concurrent.atomic.AtomicMarkableReference
 
-class LockFreeSet<T : Comparable<T>> : LockFreeSetInterface<T> {
+class LockFreeSetCorrect<T : Comparable<T>> : LockFreeSetInterface<T> {
+    val isFinalIteration = false;
     private val head = AtomicMarkableReference(
         Node(
             null,
@@ -13,13 +14,13 @@ class LockFreeSet<T : Comparable<T>> : LockFreeSetInterface<T> {
 
     override val isEmpty: Boolean
         get() {
-            var cur = head.reference.next.reference
-            while (cur != null) {
-                if (!isRemoved(cur))
-                    return false
-                cur = cur.next.reference
+            var firstSnapshot = takeSnapshot()
+            var secondSnapshot = takeSnapshot()
+            while (firstSnapshot != secondSnapshot) {
+                firstSnapshot = takeSnapshot()
+                secondSnapshot = takeSnapshot()
             }
-            return true
+            return firstSnapshot.isEmpty()
         }
 
     override fun add(value: T): Boolean {
@@ -71,10 +72,10 @@ class LockFreeSet<T : Comparable<T>> : LockFreeSetInterface<T> {
             firstSnapshot = takeSnapshot()
             secondSnapshot = takeSnapshot()
         }
-        return firstSnapshot.iterator()
+        return firstSnapshot.map { ref -> ref.value!! }.iterator()
     }
 
-    private fun takeSnapshot(): List<T> {
+    private fun takeSnapshot(): List<Node<T>> {
         var cur = head.reference.next.reference
         val set = mutableListOf<Node<T>>()
 
@@ -83,7 +84,7 @@ class LockFreeSet<T : Comparable<T>> : LockFreeSetInterface<T> {
             cur = cur.next.reference
         }
 
-        return set.filter { ref -> !isRemoved(ref) }.map { ref -> ref.value!! }
+        return set.filter { ref -> !isRemoved(ref) }
     }
 
     private fun find(value: T): Pair<Node<T>, Node<T>?> {
