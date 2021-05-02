@@ -1,4 +1,4 @@
-package ru.hse.egorov
+package ru.etu.shakhov
 
 
 import org.jetbrains.kotlinx.lincheck.LinChecker
@@ -43,8 +43,8 @@ class LincheckLockFreeSetTest {
             .minimizeFailedScenario(true)
             .actorsBefore(0)
             .actorsAfter(0)
-            .actorsPerThread(3)
-            .invocationsPerIteration(50000)
+            .actorsPerThread(5)
+            .invocationsPerIteration(30000)
             .iterations(1000)
             .threads(4)
             .logLevel(LoggingLevel.INFO)

@@ -1,4 +1,4 @@
-package ru.hse.egorov
+package ru.etu.shakhov
 
 /**
  * Lock-Free множество.
