@@ -44,11 +44,11 @@ class LincheckLockFreeSetCorrectTest {
             .actorsBefore(0)
             .actorsAfter(0)
             .actorsPerThread(3)
-            .invocationsPerIteration(50000)
+            .invocationsPerIteration(30000)
             .iterations(1000)
             .threads(4)
             .logLevel(LoggingLevel.INFO)
-        LinChecker.check(LincheckLockFreeSetCorrectTest::class.java, opts)
+        LinChecker.check(LincheckLockFreeSetTest::class.java, opts)
     }
 
 }
